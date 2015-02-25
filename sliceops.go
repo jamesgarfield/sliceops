@@ -28,9 +28,11 @@ import (
 	"sort"
 )
 
+//Impl Types: Requires a slice of any type (interface{})
 type I interface{}
 type Slice []I
 
+//Related Type: Enables sorting as a slice operation
 type _Sorter struct {
 	Slice
 	LessFunc func(I, I) bool
@@ -48,6 +50,12 @@ func (s Slice) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
+//Sorts the slice in-place using the related type sorter
+func (s Slice) Sort(less func(I, I) bool) {
+	sort.Sort(_Sorter{s, less})
+}
+
+//Returns true if all elements in the slice return true for the provided function
 func (s Slice) All(fn func(I) bool) bool {
 	for _, v := range s {
 		if !fn(v) {
@@ -57,6 +65,7 @@ func (s Slice) All(fn func(I) bool) bool {
 	return true
 }
 
+//Returns true if any elements in the slice return true for the provided function
 func (s Slice) Any(fn func(I) bool) bool {
 	for _, v := range s {
 		if fn(v) {
@@ -66,6 +75,7 @@ func (s Slice) Any(fn func(I) bool) bool {
 	return false
 }
 
+//Returns the number of elements in the slice that return true for the provided function
 func (s Slice) Count(fn func(I) bool) int {
 	count := 0
 	for _, v := range s {
@@ -76,12 +86,14 @@ func (s Slice) Count(fn func(I) bool) int {
 	return count
 }
 
+//Run the provided function on each element of the slice
 func (s Slice) Each(fn func(I)) {
 	for _, v := range s {
 		fn(v)
 	}
 }
 
+//Return the first element in the slice to return true for the provided function
 func (s Slice) First(fn func(I) bool) (match I, found bool) {
 	for _, v := range s {
 		if fn(v) {
@@ -93,10 +105,7 @@ func (s Slice) First(fn func(I) bool) (match I, found bool) {
 	return
 }
 
-func (s Slice) Sort(less func(I, I) bool) {
-	sort.Sort(_Sorter{s, less})
-}
-
+//Return a new slice of elements that return true for the provided function
 func (s Slice) Where(fn func(I) bool) (result Slice) {
 	for _, v := range s {
 		if fn(v) {
