@@ -28,11 +28,16 @@ import (
 	"sort"
 )
 
-//Impl Types: Requires a slice of any type (interface{})
+//Impl Types: Requires a slice of any type (interface{}) in source file
+//e.g. type Strings []string
 type I interface{}
 type Slice []I
 
 //Related Type: Enables sorting as a slice operation
+//e.g. Expands to 
+//type StringsSorter {
+//	Strings
+//	LessFunc func(string, string) bool}
 type _Sorter struct {
 	Slice
 	LessFunc func(I, I) bool
